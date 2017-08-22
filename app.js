@@ -189,7 +189,13 @@ var UIController = (function(){
         return(type ==='exp'? '-' : '+') + ''+ int + '.'+ dec;            
     };
 
-     
+    var nodeListForEach = function(list, callback) {
+                
+                for(var i=0; i < list.length; i++){
+                    callback(list[i], i);
+                }
+    }; 
+    
     return{
         
         getInput: function(){
@@ -261,12 +267,7 @@ var UIController = (function(){
             
             var fields = document.querySelectorAll(DOMStrings.expPercentageLabel);
             
-            var nodeListForEach = function(list, callback) {
-                
-                for(var i=0; i < list.length; i++){
-                    callback(list[i], i);
-                }
-            };
+            
 
             nodeListForEach(fields, function(current, index){
                 if(percentages[index] > 0){
@@ -288,6 +289,20 @@ var UIController = (function(){
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + '    ' + year;
         },
         
+        //change UI Type
+        changeType :function(){
+            
+            var fields = document.querySelectorAll(
+                DOMStrings.inputType + ',' +
+                DOMStrings.inputDescription + ',' +
+                DOMStrings.inputValue
+            );
+            nodeListForEach(fields,function(cur){
+                cur.classList.toggle('red-focus');
+            }); 
+            
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
+        },
         
         // make DOMStrings public
         getDOMStrings: function(){
@@ -298,9 +313,7 @@ var UIController = (function(){
 })();
 
 
-
 // app controller
-
 var controller = (function(budgetCtrl, UICtrl){
     
     var setUpEventListern = function(){
@@ -316,6 +329,9 @@ var controller = (function(budgetCtrl, UICtrl){
         
         // event delegation 
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+        
+        // change event
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changeType);
     };
     
     
